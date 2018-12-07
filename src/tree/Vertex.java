@@ -109,6 +109,15 @@ public class Vertex{
         	return false;
 		}
         
+        public boolean hasNeighbour(String neighbour) {
+        	for(int i=0;i<this.neighbourList.size();i++){
+        		if(this.neighbourList.get(i).name == neighbour){
+        			return true;
+        		}
+        	}
+        	return false;
+		}
+        
         public Edge hasEdge(Edge edge) {
         	Edge e = null;
         	for(int i=0;i<this.adjEdges.size();i++){

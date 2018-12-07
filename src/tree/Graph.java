@@ -25,6 +25,16 @@ public class Graph {
 		}
 		return verticesName;
 	}
+	
+	public String getVerticesName(int i) {
+		return this.getVerticesName().get(i);
+		
+	}
+	
+	public int getVerticesNumber() {
+		return this.getVertices().size();
+		
+	}
 
 	// returns the vertex whose description is the same as the one searched for.
 	public Vertex findVertex(String name) {

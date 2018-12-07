@@ -13,9 +13,9 @@ public class MainTest_saveToFile {
 
 	public static void main(String [] arg) throws Exception{
 
-		String input = fileToPath("behavior.txt");
-		SplitBehaviorChain chain = new SplitBehaviorChain();
-		chain.runAlgorithm(input);
+		String input = fileToPath("behavior2.txt");
+//		SplitBehaviorChain chain = new SplitBehaviorChain();
+		SplitBehaviorChain.runAlgorithm(input);
 		
 //		String output = "./output.txt";  // the path for saving the frequent itemsets found
 //		
