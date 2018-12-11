@@ -14,6 +14,20 @@ public class Graph {
 	public void addVertex(Vertex newVertex) {
 		this.graph.add(newVertex);
 	}
+	
+	
+//	public int getNeighbourEdgesWeight(Vertex pre,Vertex next) {
+//		if(this.graph.contains(pre) && this.graph.contains(next) && this.graph.contains(next))
+//	       
+//           Edge edge = new Edge(pre, next);
+//			if(pre.hasEdge(edge)!=null){
+//				return edge.getWeight();
+//			}else {
+//				return 0;
+//			}
+////			pre.hasEdge(edge).addWeight();
+//       	
+//	}
 
 	public List<Vertex> getVertices() {
 		return this.graph;

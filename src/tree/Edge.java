@@ -51,5 +51,7 @@ public class Edge {
 	public void printEdge() {
 		System.out.println("(" + this.origin +"," + this.destination + ", " +this.weight +")");
 	}
+	
+	
 
 }

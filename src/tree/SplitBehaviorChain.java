@@ -42,7 +42,7 @@ public class SplitBehaviorChain {
 		String inputString = ids.toString();
 		System.out.println("behavior chain: "+ inputString);
 		System.out.println("");
-		System.out.println("--------------scan the behavior chain-----------------");
+//		System.out.println("--------------scan the behavior chain-----------------");
 		
 		Vertex current;
 		Vertex next;
@@ -77,8 +77,8 @@ public class SplitBehaviorChain {
 		
 			edge = new Edge(current, next);
 			
-			if(current.hasEdge(edge)!=null){
-				current.hasEdge(edge).addWeight();
+			if(current.getEdge(edge)!=null){
+				current.getEdge(edge).addWeight();
 			}else {
 				edge.addWeight();
 				current.setEdge(edge);
@@ -89,22 +89,29 @@ public class SplitBehaviorChain {
 		
 		for(int i=0;i<map.size();i++){		
 			v = (Vertex) map.get(nameList.get(i));
-			v.printVertex();
+//			v.printVertex();
 			graph.addVertex(v);
 		}
-		System.out.println(graph.getVerticesName());
+//		System.out.println(graph.getVerticesName());
 		// 判断环		
-
-			CycleDetection cycleDetection = new CycleDetection(inputString,graph);
-			System.out.println("--------------DFS cycle detection-----------------");
-			cycleDetection.hasCycle();
+		
+		System.out.println("--------------Cycle Detection-----------------");
+		ArrayList<Cycle> cycleList = new ArrayList<>();
+		CycleDetection cycleDetection = new CycleDetection(inputString,graph);
+		cycleDetection.hasCycle();
+		cycleList = cycleDetection.getCycleList();
+		for(int i=0; i<cycleList.size();i++){
+			
+		}
+		
+		
 //			System.out.println("Cycle exist: "+cycleDetection.findCycle());
-			String start = cycleDetection.getStart();
-			String end = cycleDetection.getEnd();
+//			String start = cycleDetection.getStart();
+//			String end = cycleDetection.getEnd();
 //			String start = "A";
 //			String end = "E";
-			System.out.println("cycle start: "+start);
-			System.out.println("cycle end: "+end);
+//			System.out.println("cycle start: "+start);
+//			System.out.println("cycle end: "+end);
 		
 	}
 		

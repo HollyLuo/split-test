@@ -108,6 +108,7 @@ public class Vertex{
         	}
         	return false;
 		}
+     
         
         public boolean hasNeighbour(String neighbour) {
         	for(int i=0;i<this.neighbourList.size();i++){
@@ -118,7 +119,7 @@ public class Vertex{
         	return false;
 		}
         
-        public Edge hasEdge(Edge edge) {
+        public Edge getEdge(Edge edge) {
         	Edge e = null;
         	for(int i=0;i<this.adjEdges.size();i++){
         		if(this.adjEdges.get(i).getOrigin() == edge.getOrigin() && this.adjEdges.get(i).getDestination() == edge.getDestination()){
