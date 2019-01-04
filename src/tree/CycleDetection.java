@@ -4,12 +4,16 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.stream.events.StartDocument;
+
 import com.sun.glass.ui.TouchInputSupport;
+import com.sun.javafx.collections.MappingChange.Map;
 
 import tree.Graph;
 
@@ -23,7 +27,7 @@ public class CycleDetection {
 //    protected Set<String> visited;
 //    protected Set<String> exited;
 //    protected List<String> path;
-//    protected String startVertex;
+    private String start;
 //    protected String endVertex;
 //    private List<String> candidatesName = new ArrayList<String>();
 
@@ -32,6 +36,9 @@ public class CycleDetection {
     private int verticesNumber;
     private String oriString;
     private ArrayList<Cycle> cycleList = new ArrayList<>();
+    private ArrayList<ArrayList<String>> cycleAllList = new ArrayList<>();
+   
+    
     int cicle_serial = 0;
     
    
@@ -103,18 +110,23 @@ public class CycleDetection {
 //        System.out.println(this.graph.getVerticesName(0));
         if(!hasCycle)
             System.out.println("No Cycle.");
-        sortCycleList();
-        printCycleList();
-        System.out.println("--------------Behavior split-----------------");
-        splitCycleList();
+//        sortCycleList();
+//        printCycleList();
+//        System.out.println("--------------Behavior split-----------------");
+//        splitCycleList();
 //        SplitInputStringByCycle();
+        setStart(findStartVertex(cycleAllList,graph));
+//        System.out.println(start); 
+       
+//        String sp[] = oriString.split(start);
+//        for(String s:sp) {
+//        	System.out.println(s);
+//        }  
     }
-//    private void sortCycleList(){
-//    	for(int i=0;i<cycleList.size();i++){
-//    		
-//    	}
-//    }
    
+	
+	
+	
 	public void findCycle(String v)
     {
        int j=0;   
@@ -136,21 +148,29 @@ public class CycleDetection {
 //                  cycle +=",";
                   j++;
                }
-
+        	  
 
               //calculate the trace number 
 //             System.out.print(" size:"+trace.size());
 //        	   System.out.print( " toFind: "+cycle.toString());
 //        	   System.out.println(); // aaa
+        	   cycleAllList.add(cycle);
+        	   
         	   cycle2.addAll(cycle);
-        	   cycle.add(first);//1231
+//        	   cycle.add(first);//1231
+        	   System.out.println( "Cycle: "+cycle.toString());
 //        	   System.out.println(" cycle number:" + findCycleNumberFromInputString(convertToString(cycle)));//aaa
+//        	   int number = countCycleByEdges(cycle);
+        	
+        	   //the cycle real exit.
         	   int number = findCycleNumberFromInputString(convertToString(cycle));
+//        	   System.out.println(number);
         	   if(number != 0){
 //        		   System.out.println(cycle.toString());
 //        		   System.out.println(" cycle number2:" + countCycleByEdges(cycle));
 //        		   System.out.println(cycle.size());
 //        		   System.out.println(cycle2.size());
+        		   // the cycle size >1 ,not 2->2
         		   if(cycle2.size()>1){
         			   cicle_serial+=1;
         			   Cycle cycle3 = new Cycle();
@@ -173,6 +193,24 @@ public class CycleDetection {
         }
         trace.remove(trace.size()-1);
     }
+	
+	private String findStartVertex(ArrayList<ArrayList<String>> cycleAllList,Graph graph) {
+		ArrayList<String> startVertexList = new ArrayList<>();
+		for(int i=0;i<cycleAllList.size();i++){
+			if(cycleAllList.get(i).size()>1){
+				if(startVertexList.indexOf(cycleAllList.get(i).get(0))==-1){
+					startVertexList.add(cycleAllList.get(i).get(0));
+				}
+			}
+		}
+		String startVertex = startVertexList.get(0);
+		for (int i=1;i<startVertexList.size();i++){		
+			if(graph.findVertex(startVertexList.get(i)).getOutNumber()>graph.findVertex(startVertex).getOutNumber()){
+				startVertex = startVertexList.get(i);
+			}
+		}	
+		return startVertex;
+	}
     
     private int countCycleByEdges(ArrayList<String> cycle) {
 		// TODO Auto-generated method stub
@@ -193,8 +231,8 @@ public class CycleDetection {
 			}
     	}
     	return smallWeight;
-		
 	}
+    
 	private String convertToString(ArrayList<String> cycle) {
 		// TODO Auto-generated method stub
     	String string = cycle.get(0);
@@ -252,6 +290,12 @@ public class CycleDetection {
 				weight--;
 			}
 		}
+	}
+	public String getStart() {
+		return start;
+	}
+	public void setStart(String start) {
+		this.start = start;
 	}
 	
 	

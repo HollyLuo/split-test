@@ -7,9 +7,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class SplitBehaviorChain {
 	public static String readFile(String filename) throws IOException {
@@ -29,7 +34,7 @@ public class SplitBehaviorChain {
         return message;
 	}
 	
-	public  static void runAlgorithm(String inputFile) throws Exception  {
+	public  static void runAlgorithm(String inputFile, float support) throws Exception  {
 		String ids = readFile(inputFile);
 		String behaviorList[] = ids.split(",");
 		ArrayList<String> behaviorList2= new ArrayList<>();
@@ -99,21 +104,142 @@ public class SplitBehaviorChain {
 		ArrayList<Cycle> cycleList = new ArrayList<>();
 		CycleDetection cycleDetection = new CycleDetection(inputString,graph);
 		cycleDetection.hasCycle();
-		cycleList = cycleDetection.getCycleList();
-		for(int i=0; i<cycleList.size();i++){
-			
-		}
+		String start  = cycleDetection.getStart();
 		
+		System.out.println("--------------Behavior split-----------------");
+		ArrayList<List<String>> pattList = new ArrayList<List<String>>();
+	    pattList =  SplitInputStringByStartVertex(inputString,start);
+	    int size = pattList.size();
+	    
+	    System.out.println("--------------All Pattern -----------------");
+	    Map<List<String>, Integer> map2 = new HashMap<List<String>, Integer>();
+	    map2 = CountDuplicatedList(pattList);
+//	    System.out.println("\nMap排序-以key排序");
+
+	    List<Map.Entry<List<String>, Integer>> list = new ArrayList<Map.Entry<List<String>, Integer>>(map2.entrySet());
+        Collections.sort(list,new Comparator<Map.Entry<List<String>, Integer>>() {
+			@Override
+			public int compare(Entry<List<String>, Integer> o1, Entry<List<String>, Integer> o2) {
+				return o2.getValue().compareTo(o1.getValue());
+			}
+        });
+        printList(list);
+        System.out.println();
+        System.out.println("--------------Frequecy Pattern -----------------");
+        Map<List<String>, Integer> map3 = new HashMap<List<String>, Integer>();
+        map3 = getFrequencyPattern(map2,size,support);
+        printMap(map3);
 		
-//			System.out.println("Cycle exist: "+cycleDetection.findCycle());
-//			String start = cycleDetection.getStart();
-//			String end = cycleDetection.getEnd();
-//			String start = "A";
-//			String end = "E";
-//			System.out.println("cycle start: "+start);
-//			System.out.println("cycle end: "+end);
+		String path="/Users/ling/Documents/Eclipseworkspace/Weka/pattern/ca/pfv/spmf/test/contextPrefixSpan3.txt";
+//		String path="/Users/ling/Documents/Eclipseworkspace/Weka/test/src/test/behavor2.txt";
+		writeFileContext(pattList,path);	
+	}
+	
+	private static Map<List<String>, Integer> getFrequencyPattern(Map<List<String>, Integer> map2, int size, float support) {
+		Map<List<String>, Integer> map = new HashMap<List<String>, Integer>();
+//		System.out.println(size);
+//		System.out.println(support);
+		
+		for (Map.Entry<List<String>, Integer> entry : map2.entrySet()) { 
+//			System.out.println(entry.getValue());
+			float a= 0.0f;
+			a = (float)entry.getValue()/(float)size;
+			if(a >= support){
+				map.put(entry.getKey(), entry.getValue());
+			}
+		} 
+		
+		return map;
+	}
+
+	
+
+	private static void printMap(Map<List<String>, Integer> map) {
+		for (Map.Entry<List<String>, Integer> entry : map.entrySet()) { 
+			   System.out.println("Pattern = " + entry.getKey() + ", Weight = " + entry.getValue()); 
+			 } 
 		
 	}
+	private static void printList(List<Entry<List<String>, Integer>> list) {
+      for(Map.Entry<List<String>,Integer> mapping:list){ 
+    	  System.out.println("Pattern = " + mapping.getKey() + ", Weight = " + mapping.getValue()); 
+      } 
+	}
+
+	private static Map<List<String>, Integer> CountDuplicatedList(ArrayList<List<String>> pattList) {
+		Map<List<String>, Integer> map2 = new HashMap<List<String>, Integer>();
+		for (List<String> item : pattList) {
+			if (map2.containsKey(item)) {
+				map2.put(item, map2.get(item).intValue() + 1);
+			} else {
+				map2.put(item, new Integer(1));
+			}
+		}
+		Iterator<List<String>> keys = map2.keySet().iterator();
+		while (keys.hasNext()) {
+			List<String> key = keys.next();
+//			System.out.println(key + ":" + map2.get(key).intValue() + ", ");
+		}
+		return map2;
+	}
+
+	private static ArrayList<List<String>> SplitInputStringByStartVertex(String oriString, String start) {
+		 ArrayList<List<String>> pattList = new ArrayList<List<String>>();
+		  String behaviorList2[] = oriString.split(",");
+		  
+		  ArrayList<String> behaviorList= new ArrayList<>();
+		  
+		  
+		  for(int i = 0; i < behaviorList2.length; i++){
+			 behaviorList.add(behaviorList2[i]);
+		  }
+
+		  ArrayList<Integer> findStart = new ArrayList<>();
+
+		  for(int i=0;i<behaviorList.size();i++){
+			  if(behaviorList.get(i).equals(start)){			
+				  findStart.add(i);
+//				  System.out.println(i);
+			  }
+		  }	  
+
+		  for(int i=0;i<findStart.size()-1;i++){
+			  List<String> behavior = new ArrayList<>();
+			  if(i==0 && (findStart.get(i)!=0)){
+				  behavior = behaviorList.subList(0, findStart.get(i));
+				  pattList.add(behavior);
+				  System.out.println(behavior);
+			  }
+			  behavior = behaviorList.subList(findStart.get(i), findStart.get(i+1));
+			  pattList.add(behavior);
+			  System.out.println(behavior);
+		  }
+		  if(findStart.get(findStart.size()-1) < behaviorList.size()){
+			  List<String> behavior = new ArrayList<>();
+			  behavior = behaviorList.subList(findStart.get(findStart.size()-1),behaviorList.size());
+			  pattList.add(behavior);
+			  System.out.println(behavior);
+		  }
+		  return pattList;
+	}
+	
+	public static void writeFileContext(ArrayList<List<String>> pattList, String path) throws Exception {
+		File file = new File(path);
+        //如果没有文件就创建
+        if (!file.isFile()) {
+            file.createNewFile();
+        }
+        BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+        for (int i=0;i<pattList.size();i++){
+        	List<String> arrayList = pattList.get(i);
+        	for(int j=0;j<arrayList.size();j++){
+        		writer.write(arrayList.get(j) + " " + "-1"+" ");
+        	}
+        	writer.write("-2"+"\n");
+            
+        }
+        writer.close();
+    }
 		
 		
 		

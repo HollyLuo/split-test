@@ -37,7 +37,6 @@ public class MainWindow extends JFrame implements ThreadCompleteListener, Uncaug
 	private JButton buttonRun;
 	private JTextArea textArea;
 	private static NotifyingThread currentRunningAlgorithmThread = null;
-	private JButton btnSkip;
 
 	/**
 	 * Launch the application.
@@ -85,7 +84,7 @@ public class MainWindow extends JFrame implements ThreadCompleteListener, Uncaug
         contentPane.add(buttonInput);
         
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(40, 108, 522, 298);
+        scrollPane.setBounds(40, 95, 522, 316);
         contentPane.add(scrollPane);
         
         textArea = new JTextArea();
@@ -99,23 +98,8 @@ public class MainWindow extends JFrame implements ThreadCompleteListener, Uncaug
         		processRunAlgorithmCommandFromGUI();
         	}
         });
-        buttonRun.setBounds(245, 61, 117, 29);
+        buttonRun.setBounds(250, 54, 117, 29);
         contentPane.add(buttonRun);
-        
-        btnSkip = new JButton("skip");
-        btnSkip.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {       		
-        		PatternVisualize bf=new PatternVisualize();
-//        		Icon icon=new ImageIcon("enter.jpg");
-//        		JLabel label2=new JLabel(icon);
-//        		bf.getContentPane().add(label2);
-//        		bf.setSize(300,360);
-        		bf.show();
-        		
-        	}
-        });
-        btnSkip.setBounds(367, 61, 117, 29);
-        contentPane.add(btnSkip);
 		
 		
 		
@@ -151,8 +135,9 @@ public class MainWindow extends JFrame implements ThreadCompleteListener, Uncaug
 		currentRunningAlgorithmThread = new NotifyingThread() {
 			@Override
 			public void doRun() throws Exception {
-				SplitBehaviorChain chain = new SplitBehaviorChain();
-				chain.runAlgorithm(inputFile);
+//				SplitBehaviorChain chain = new SplitBehaviorChain();
+				float support = 0.2f;
+				SplitBehaviorChain.runAlgorithm(inputFile,support);
 			}
 		};
 		// The main thread will listen for the completion of the algorithm

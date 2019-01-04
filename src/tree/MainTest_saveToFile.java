@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
+import javax.annotation.processing.SupportedAnnotationTypes;
+
 
 /**
  * Example of how to use APRIORI algorithm from the source code.
@@ -15,7 +17,8 @@ public class MainTest_saveToFile {
 
 		String input = fileToPath("behavior2.txt");
 //		SplitBehaviorChain chain = new SplitBehaviorChain();
-		SplitBehaviorChain.runAlgorithm(input);
+		float support = 0.2f;
+		SplitBehaviorChain.runAlgorithm(input,support);
 		
 //		String output = "./output.txt";  // the path for saving the frequent itemsets found
 //		
